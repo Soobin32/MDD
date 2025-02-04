@@ -62,7 +62,7 @@
             navigator.bluetooth.requestDevice({ acceptAllDevices: true }) // Requests the user to connect to a Bluetooth device
                 .then(device => { // if device is detected,
                     alert("New data detected. Would you like to log in to check?"); // alert shown asking the user to log in
-                    window.location.href = 'file:///Users/seosoobin/Desktop/Uni/BG4103/website/login.html'; // Redirect to login if Bluetooth is detected
+                    window.location.href = '/others/login.html'; // Redirect to login if Bluetooth is detected
                 })
                 .catch(error => {
                     console.log("Bluetooth not connected"); // if not detected, logs an error in the console
