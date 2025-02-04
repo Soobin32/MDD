@@ -1,0 +1,128 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif; /* sans-senrif as backup */
+    margin: 0; /* removes default margin - outside the element */
+    padding: 0; /* removes default padding - inside the element i.e. between content and border */
+    background-color: #0c0c19; 
+    color: #fcfcfc; /* text color */
+    display: flex; /* uses Flexbox for layout */
+    /*CSS layout model designed to help align and 
+    distribute space efficiently among items in a container, 
+    even when their size is unknown or dynamic. 
+    It is particularly useful for building responsive designs.*/
+    flex-direction: column; /* arranges contents vertically */
+    /*align-items: center; /* centers contents horizontally */
+    /*justify-content: center; /* centers contents vertically */
+    min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
+    /* viewport: visible area of a webpage - changes depending on the device and window size 
+    vh = viewport height */
+}
+
+/* Container Styling - wrapper element used to structure and organise content in a webpage */
+.container { 
+    background: #0c0c19;
+    padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
+    border-radius: 8px;  /* rounds the corner of container*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* adds a subtle shadow for a raised effect */
+    width: 90%; /* makes the container take up 90% of the screen width */
+    max-width: 100%; /* prevents container from getting wider than 500px*/
+    /**text-align: center;**/
+    margin: 0;
+}
+
+.image-text-container {
+    background: #0c0c19;
+    padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
+    border-radius: 8px;  /* rounds the corner of container*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* adds a subtle shadow for a raised effect */
+    width: 100%; /* makes the container take up 90% of the screen width */
+    max-width: 100%; /* prevents container from getting wider than 500px*/
+    margin: 0;
+    gap: 20px;
+    display: flex;
+    align-items: center; /* vertically aligns text and image */
+}
+
+.image-text-container img {
+    width: 500px; /* Adjust image size */
+    height: auto;
+    border-radius: 10px; /* Optional: Adds rounded corners */
+}
+
+.image-text-container .text {
+    min-width: 300px;
+}
+
+.image-text-container:nth-of-type(3) {
+    background-color: #f5f5f5; /* Light grey background */
+    padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
+    width:100%;
+    border-radius: 0;
+    gap: 20px;
+}
+
+.image-text-container:nth-of-type(3) .text{
+    color: #0c0c19;
+    min-width: 300px;
+}
+
+h1 {
+    margin: 0; 
+    font-size: 2.5rem; 
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+/* Heading 2 style */
+h2 {
+    margin: 0; 
+    font-size: 2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+h4 {
+    margin: 0; 
+    font-size: 1.2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+    line-height: 150%;
+}
+
+.navbar {
+    background-color: #0c0c19 !important; /* Change navbar background color */
+    padding: 15px 20px; /* Add padding to navbar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .nav-link {
+    color: #fcfcfc;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 6px;
+}
+.navbar-nav .nav-link:hover {
+    color: #fffdd9 !important; /* Change color when hovered */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Make brand text bigger */
+    font-weight: bold; /* Make it bold */
+    color: #fcfcfc; /* Make text color white */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Result Styling */
+.result { /* targets elements with the .result class*/
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold; /* bold text */
+    color: #28a745; /* text color */
+}
+
+/* Error Styling */
+.result.error { /* targets .result elements that also have the error class*/
+    color: #dc3545;
+}
