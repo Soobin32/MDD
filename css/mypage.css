@@ -1,0 +1,201 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif; /* sans-senrif as backup */
+    margin: 0; /* removes default margin - outside the element */
+    padding: 0; /* removes default padding - inside the element i.e. between content and border */
+    background-color: #0c0c19; 
+    color: #fcfcfc; /* text color */
+    display: flex; /* uses Flexbox for layout */
+    /*CSS layout model designed to help align and 
+    distribute space efficiently among items in a container, 
+    even when their size is unknown or dynamic. 
+    It is particularly useful for building responsive designs.*/
+    flex-direction: column; /* arranges contents vertically */
+    /*align-items: center; /* centers contents horizontally */
+    /*justify-content: center; /* centers contents vertically */
+    min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
+    /* viewport: visible area of a webpage - changes depending on the device and window size 
+    vh = viewport height */
+}
+
+/* Container Styling - wrapper element used to structure and organise content in a webpage */
+.main-container { 
+    display:flex;
+    flex-direction: column;
+    padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
+    gap:30px;
+    position: absolute; /*position the container relative to the entire page*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width:100%;
+}
+
+.calendar-container{
+    width: 90%;
+    max-width: 800px;
+    background-color: #0c0c19;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    position: absolute; /*position the container relative to the entire page*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+.calendar-header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.nav-arrow {
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
+}
+
+.calender-title {
+    font-size: 22px;
+    font-size: bold;
+}
+
+/* Upload Button Positioned Above the Calendar */
+.calendar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.upload-btn {
+    background-color: #fcfcfc;
+    color: #0c0c19;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /*create a 7-column layout*/
+    gap: 5px;
+    padding: 10px;
+    background: #0c0c19;
+}
+
+.day {
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #0c0c19;
+}
+
+/* Highlight Today's Date */
+.today {
+    background-color: #201a57;
+    color: #fcfcfc;
+    font-weight: bold;
+    border-radius: 100%;
+}
+
+/* Health Metrics Section */
+.metrics-container {
+    width: 90%;
+    max-width: 800px;
+    background-color: #0c0c19;
+    padding: 20px;
+    position: absolute; /*position the container relative to the entire page*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    margin-top: 500px;
+}
+
+.metric-card {
+    background-color: #201a57;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between; /*space out elements evenly with the first and last item pushed to the edges.*/
+    align-items: center;
+    font-size: 18px;
+}
+
+.metric-card span {
+    color: #fcfcfc;
+}
+
+h1 {
+    margin: 0; 
+    font-size: 2.5rem; 
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+/* Heading 2 style */
+h2 {
+    margin: 0; 
+    font-size: 1.7rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+h4 {
+    margin: 0; 
+    font-size: 1.5rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+    line-height: 150%;
+}
+
+h5 {
+    margin: 0; 
+    font-size: 1.5rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    line-height: 150%;
+}
+
+.navbar {
+    background-color: #0c0c19 !important; /* Change navbar background color */
+    padding: 15px 20px; /* Add padding to navbar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .nav-link {
+    color: #fcfcfc;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 6px;
+}
+.navbar-nav .nav-link:hover {
+    color: #fffdd9 !important; /* Change color when hovered */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Make brand text bigger */
+    font-weight: bold; /* Make it bold */
+    color: #fcfcfc; /* Make text color white */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Result Styling */
+.result { /* targets elements with the .result class*/
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold; /* bold text */
+    color: #28a745; /* text color */
+}
+
+/* Error Styling */
+.result.error { /* targets .result elements that also have the error class*/
+    color: #dc3545;
+}

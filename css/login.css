@@ -1,0 +1,152 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif; /* sans-senrif as backup */
+    margin: 0; /* removes default margin - outside the element */
+    padding: 0; /* removes default padding - inside the element i.e. between content and border */
+    background-color: #0c0c19; 
+    color: #fcfcfc; /* text color */
+    display: flex; /* uses Flexbox for layout */
+    /*CSS layout model designed to help align and 
+    distribute space efficiently among items in a container, 
+    even when their size is unknown or dynamic. 
+    It is particularly useful for building responsive designs.*/
+    flex-direction: column; /* arranges contents vertically */
+    /*align-items: center; /* centers contents horizontally */
+    /*justify-content: center; /* centers contents vertically */
+    min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
+    /* viewport: visible area of a webpage - changes depending on the device and window size 
+    vh = viewport height */
+}
+
+/* Container Styling - wrapper element used to structure and organise content in a webpage */
+.container { 
+    background: #0c0c19;
+    padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
+    border-radius: 8px;  /* rounds the corner of container*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* adds a subtle shadow for a raised effect */
+    width: 90%; /* makes the container take up 90% of the screen width */
+    max-width: 100%; /* prevents container from getting wider than 500px*/
+    /**text-align: center;**/
+    margin: 0;
+}
+
+h1 {
+    margin: 0; 
+    font-size: 2.5rem; 
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+/* Heading 2 style */
+h2 {
+    margin: 0; 
+    font-size: 2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+h4 {
+    margin: 0; 
+    font-size: 1.2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+    line-height: 150%;
+}
+
+.navbar {
+    background-color: #0c0c19 !important; /* Change navbar background color */
+    padding: 15px 20px; /* Add padding to navbar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .nav-link {
+    color: #fcfcfc;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 6px;
+}
+.navbar-nav .nav-link:hover {
+    color: #fffdd9 !important; /* Change color when hovered */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Make brand text bigger */
+    font-weight: bold; /* Make it bold */
+    color: #fcfcfc; /* Make text color white */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Login Container */
+.login-container {
+    background-color: #fdfcff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 500px;
+    text-align: center;
+    color: #3b3b3b;
+    position: absolute; /*position the container relative to the entire page*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /*Adjusts positioning to perfectly center it*/
+}
+
+/* Heading */
+.login-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Input Fields */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 1px solid #707070;
+    border-radius: 5px;
+    background-color: #fdfcff;
+    color: #3b3b3b;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+/* Input Field Focus Effect */
+.input-field:focus {
+    border-bottom: 2px solid #3b3b3b;
+}
+
+.input-field::placeholder {
+    color: #707070;
+}
+
+/* Login Button */
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b3b3b;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    color: #fdfcff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Forgot Password & Sign Up */
+.extra-links {
+    margin-top: 15px;
+}
+
+.extra-links a {
+    color: #3b3b3b;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.extra-links a:hover {
+    color: #575757;
+}

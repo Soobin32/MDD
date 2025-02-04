@@ -1,0 +1,153 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif; /* sans-senrif as backup */
+    margin: 0; /* removes default margin - outside the element */
+    padding: 0; /* removes default padding - inside the element i.e. between content and border */
+    background-color: #0c0c19; 
+    color: #fcfcfc; /* text color */
+    display: flex; /* uses Flexbox for layout */
+    /*CSS layout model designed to help align and 
+    distribute space efficiently among items in a container, 
+    even when their size is unknown or dynamic. 
+    It is particularly useful for building responsive designs.*/
+    flex-direction: column; /* arranges contents vertically */
+    /*align-items: center; /* centers contents horizontally */
+    /*justify-content: center; /* centers contents vertically */
+    min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
+    /* viewport: visible area of a webpage - changes depending on the device and window size 
+    vh = viewport height */
+}
+
+h1 {
+    margin: 0; 
+    font-size: 2.5rem; 
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+/* Heading 2 style */
+h2 {
+    margin: 0; 
+    font-size: 2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+}
+
+h4 {
+    margin: 0; 
+    font-size: 1.2rem; /* two times the deafult font size*/
+    margin-bottom: 20px; /* spacing below the heading */
+    font-weight: bold;
+    line-height: 150%;
+}
+
+/* Button */
+button {
+    background-color: white; /* button color */
+    color: #0c0c19; /* text color */
+    border: none; /* removes default button border */
+    padding: 8px 20px; /* spacing inside the button */
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer; /* changes cursor to a pointer when hovered */
+    margin-top: 20px; /* spacing above the button */
+}
+
+button:hover { /* button hover effect */
+    background-color: #0c0c19; /* changes button color to a darker blue */
+}
+
+.navbar {
+    background-color: #0c0c19 !important; /* Change navbar background color */
+    padding: 15px 20px; /* Add padding to navbar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav .nav-link {
+    color: #fcfcfc;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-right: 6px;
+}
+.navbar-nav .nav-link:hover {
+    color: #fffdd9 !important; /* Change color when hovered */
+}
+
+.navbar-brand {
+    font-size: 1.5rem; /* Make brand text bigger */
+    font-weight: bold; /* Make it bold */
+    color: #fcfcfc; /* Make text color white */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.signup-container {
+    width: 500px;
+    padding: 40px;
+    position: absolute; /*position the container relative to the entire page*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    margin-top: 200px;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fdfcff;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-input{
+    width: 100%;
+    padding: 12px;
+    border:none;
+    background-color: #fdfcff;
+    color: #3b3b3b;
+    font-size: 16px;
+    outline:none;
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+
+.name-fields {
+    display: flex;
+    gap: 10px;
+}
+
+.name-fields .form-input {
+    width: 50%;
+    border-radius: 3px;
+}
+
+/* Dropdown Styling */
+.form-select {
+    width: 100%;
+    padding: 12px;
+    background: #fdfcff;
+    color: #3b3b3b;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    margin-bottom: 20px;
+}
+
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #fdfcff;
+    color: #3b3b3b;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #f2f0f5;
+}
