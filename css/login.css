@@ -74,8 +74,8 @@ h4 {
     color: #fcfcfc; /* Make text color white */
 }
 
-.navbar-brand a:hover {
-    color: #fcfcfc; /* no color chnage */
+.navbar-brand:hover {
+    color: #fcfcfc; !important; /* no color chnage */
 }
 
 .navbar-toggler-icon {
