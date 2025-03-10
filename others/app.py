@@ -8,6 +8,7 @@ from flask_cors import CORS
 import pandas as pd # handles tabular data
 import numpy as np # for numerical operations
 import tensorflow as tf # loads and runs ML model
+import os
 
 # Create a Flask application instance (initialisation)
 app = Flask(__name__)
