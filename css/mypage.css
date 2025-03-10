@@ -196,7 +196,7 @@ h5 {
 .result.error { /* targets .result elements that also have the error class*/
     color: #dc3545;
 }
-result-container {
+.result-container {
     width: 100%;
     max-width: 800px;
     background-color: #0c0c19;
