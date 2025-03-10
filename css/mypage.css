@@ -19,16 +19,6 @@ body {
 }
 
 /* Container Styling - wrapper element used to structure and organise content in a webpage 
-.main-container { 
-    width: 90%;
-    max-width: 900px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-}*/
 .main-container{
     background: #0c0c19;
     padding: 20px 40px; /* top/bottom: 20px, left/right: 40px */
