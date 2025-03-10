@@ -132,42 +132,55 @@ def process_and_predict(data):
     """Preprocess sensor data & run it through the ML model."""
     print("Processing data: ", data)
     try:
-        # Convert JSON data to DataFrame
-        df = pd.DataFrame(data)
+        # Extract sensor data
+        hr_data = data.get("heartrate", [])
+        spo2_data = data.get("sp02", [])
+        strain_data = data.get("strain", [])
+
+        # Convert lists to DataFrames
+        df_hr = pd.DataFrame(hr_data)
+        df_spo2 = pd.DataFrame(spo2_data)
+        df_strain = pd.DataFrame(strain_data)
+
+        # Ensure "value" column exists in all DataFrames
+        for df in [df_hr, df_spo2, df_strain]:
+            if "value" not in df:
+                raise ValueError("Missing 'value' column in one of the datasets.")
 
         # Ensure all data is numeric
-        df["value"] = pd.to_numeric(df["value"], errors="coerce")
+        df_hr["value"] = pd.to_numeric(df_hr["value"], errors="coerce")
+        df_spo2["value"] = pd.to_numeric(df_spo2["value"], errors="coerce")
+        df_strain["value"] = pd.to_numeric(df_strain["value"], errors="coerce")
 
-        # Identify the two time reversal points
-        reversal_indices = [i for i in range(1, len(df)) if df["time"].iloc[i] < df["time"].iloc[i - 1]]
-        # Ensure we found exactly **two** reversal points
-        if len(reversal_indices) != 2:
-            return {"error": f"Expected exactly 2 time reversal points, found {len(reversal_indices)}"}
+        # Remove invalid values (e.g., -999 or extreme values)
+        df_hr = df_hr[(df_hr["value"] >= 30) & (df_hr["value"] <= 200)]
+        df_spo2 = df_spo2[(df_spo2["value"] >= 70) & (df_spo2["value"] <= 100)]
+        df_strain = df_strain[(df_strain["value"] >= 0) & (df_strain["value"] <= 10)]  # Adjust based on expected strain range
 
-        # Split the data at the detected reversal points
-        df_hr = df.iloc[:reversal_indices[0]].copy()
-        df_spo2 = df.iloc[reversal_indices[1]:].copy()
-        df_breathing = df.iloc[reversal_indices[0]:reversal_indices[1]].copy()
+        # Ensure equal lengths before merging
+        min_len = min(len(df_hr), len(df_spo2), len(df_strain))
+        df_hr = df_hr.iloc[:min_len]
+        df_spo2 = df_spo2.iloc[:min_len]
+        df_strain = df_strain.iloc[:min_len]
 
-        # Rename columns for merging
-        df_hr.rename(columns={"value": "HR"}, inplace=True)
-        df_spo2.rename(columns={"value": "SpO2"}, inplace=True)
-        df_breathing.rename(columns={"value": "Breathing"}, inplace=True)
+        # Merge into a single DataFrame
+        merged_df = pd.DataFrame({
+            "HR": df_hr["value"].values,
+            "SpO2": df_spo2["value"].values,
+            "Breathing": df_strain["value"].values
+        })
 
-        # **MERGE WITHOUT CONSIDERING TIMESTAMPS** - Align row-wise
-        min_len = min(len(df_hr), len(df_spo2), len(df_breathing))
-        df_hr, df_spo2, df_breathing = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_breathing.iloc[:min_len]
+        # Convert to NumPy array
+        values = merged_df.to_numpy().reshape(merged_df.shape[0], 3, 1)
 
-        # Combine values into a new DataFrame, Swap the SpO2 and Breathing columns**
-        merged_df = pd.DataFrame({"HR": df_hr["HR"].values, "SpO2": df_spo2["SpO2"].values, "Breathing": df_breathing["Breathing"].values})
-        values = merged_df.to_numpy().reshape(values.shape[0], 3, 1)
+        # Debugging: Print first 5 rows
+        print("✅ Preprocessed Data (First 5 Samples):")
+        print(merged_df.head())
 
-        print("Model prediction started...")
-        # Make prediction i.e. run the model
+        # Run model prediction
         prediction = model.predict(values, batch_size=1)
-        print("Model prediction completed.")
 
-        # Convert probability to binary classification - 1=apnea, 0=normal
+        # Convert probabilities to binary classification - 1=apnea, 0=normal
         pred_binary = np.squeeze((prediction > 0.5).astype(int))
 
         # Post-process results
