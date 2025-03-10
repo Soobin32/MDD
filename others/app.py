@@ -17,8 +17,7 @@ os.environ["TF_TRT_ALLOW_ENGINE_NATIVE_SEGMENT_EXECUTION"] = "0"
 # Create a Flask application instance (initialisation)
 app = Flask(__name__)
 # Set up CORS for allowing specific origins (for your HTML served on 127.0.0.1:8000)
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["https://sleepykeepy.com", "https://mdd-k92n.onrender.com"]}})
-
+CORS(app, resources={r"/*": {"origins": "https://sleepykeepy.com"}})
 print("Flask app is starting...")
 
 
@@ -129,8 +128,9 @@ def process_and_predict(data): # takes input sensor data, preprocesses it, and r
 # POST means this endpoint accepts data (GET - fetch data, PUT - update existing data, DELETE - remove data)
 # in app.py, frontend sends sensor data 
 def predict():
-    if request.method == 'OPTIONS':
-        return '', 200 # Respond OK to preflight request
+    if request.method == "OPTIONS":
+        return jsonify({"message": "CORS Preflight OK"}), 200  # Preflight success
+        
     try:
         data = request.get_json() # extracts JSON data from the HTTP request
         print("Received data:", data)
