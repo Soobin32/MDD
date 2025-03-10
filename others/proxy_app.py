@@ -147,6 +147,10 @@ def process_and_predict(data):
         df_spo2["value"] = pd.to_numeric(df_spo2["value"], errors="coerce")
         df_strain["value"] = pd.to_numeric(df_strain["value"], errors="coerce")
 
+        # Compute averages
+        avg_hr = df_hr["value"].mean() if not df_hr.empty else None
+        avg_spo2 = df_spo2["value"].mean() if not df_spo2.empty else None
+        
         # Ensure equal lengths before merging
         min_len = min(len(df_hr), len(df_spo2), len(df_strain))
         df_hr, df_spo2, df_strain = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_strain.iloc[:min_len]
@@ -189,8 +193,16 @@ def process_and_predict(data):
         apnea_index = [i for i in range(len(pred_label)) if pred_label[i] == 1] # stores index positions of apnea events and counts them
         apnea_event_count = len(apnea_index)
 
-        # Return results
-        return {"total_apnea_events": apnea_event_count}
+        # Determine chest movement status
+        chest_status = "Normal" if apnea_event_count <= 3 else "Abnormal"
+
+        # Return results including average values
+        return {
+            "total_apnea_events": int(apnea_event_count),
+            "average_heart_rate": round(avg_hr, 1) if avg_hr is not None else "No Data",
+            "average_spo2": round(avg_spo2, 1) if avg_spo2 is not None else "No Data",
+            "chest_movement": chest_status
+        }
 
     except Exception as e:
         print(f"Error during prediction: {e}")
