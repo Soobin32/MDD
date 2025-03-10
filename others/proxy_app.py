@@ -163,14 +163,30 @@ def process_and_predict(data):
         values = merged_df.to_numpy().reshape(values.shape[0], 3, 1)
 
         print("Model prediction started...")
+        # Make prediction i.e. run the model
         prediction = model.predict(values, batch_size=1)
         print("Model prediction completed.")
 
         # Convert probability to binary classification - 1=apnea, 0=normal
         pred_binary = np.squeeze((prediction > 0.5).astype(int))
-        # Post-process the result to count apnea events
-        apnea_event_count = sum((pred_binary[i] == 1 and (i == 0 or pred_binary[i - 1] == 0)) for i in range(len(pred_binary)))
 
+        # Post-process results
+        pred_label = pred_binary.copy()
+        previous_value = 0
+
+        for i in range(len(pred_label)):
+            if pred_label[i] == 1:
+                if previous_value == 1:
+                    pred_label[i] = 0  # Change consecutive 1s to 0 - ensure onlny the first detection of each apnea event is counted
+                previous_value = 1
+            else:
+                previous_value = 0
+
+        # Count apnea events
+        apnea_index = [i for i in range(len(pred_label)) if pred_label[i] == 1] # stores index positions of apnea events and counts them
+        apnea_event_count = len(apnea_index)
+
+        # Return results
         return {"total_apnea_events": apnea_event_count}
 
     except Exception as e:
