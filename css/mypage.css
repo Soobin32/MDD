@@ -27,7 +27,8 @@ body {
     width: 90%; /* makes the container take up 90% of the screen width */
     max-width: 100%; /* prevents container from getting wider than 500px*/
     text-align: center;
-    margin: 0;
+    /*margin: 0;*/
+    margin: auto;
 }
 
 .calendar-container {
