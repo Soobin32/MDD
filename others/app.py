@@ -149,8 +149,7 @@ def home():
     return "API is running!", 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Use Render's assigned port
-    app.run(debug=True, host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000))) # Use Render's assigned port
     # runs the Flask App - starts the Flask server, waits for requests to come in, when a request is received, Flask routes it to the correct function
     # app.run run whatever was intiated with @app.route
     # post request made to /prediction -> runs predict() function
