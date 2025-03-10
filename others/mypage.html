@@ -154,59 +154,74 @@
     const PREDICTION_URL = `${API_BASE_URL}/predict`;
 
     document.getElementById("loadDataBtn").addEventListener("click", async function () {
-        document.getElementById("loadingMessage").innerText = "Loading data... Please wait.";
-    
+        const loadingMessage = document.getElementById("loadingMessage");
+        const sensorDataDisplay = document.getElementById("sensorData");
+        const predictionDisplay = document.getElementById("predictionResult");
+
+        // Step 1: Display Initial Loading Message
+        loadingMessage.innerText = "Loading data... Please wait.";
+        sensorDataDisplay.innerText = "";
+        predictionDisplay.innerText = "";
+            
         try {
             let response = await fetch(PROXY_URL, {
                 method: "GET",
                 mode: "cors",
                 headers: { "Content-Type": "application/json" }
             });
+
+            if (!response.ok) throw new Error("Failed to fetch sensor data");
     
             let data = await response.json();
             console.log("Fetched Sensor Data:", data);
     
-            document.getElementById("loadingMessage").innerText = "Data loaded successfully!";
+            // Step 3: Update UI to Indicate Data Successfully Loaded
+            loadingMessage.innerText = "Data loaded successfully! Running analysis of your result...";
             
             // Display a summary instead of raw data
-            document.getElementById("sensorData").innerText = 
-                "Heart Rate Data Points: " + (data.heartrate ? data.heartrate.length : "No data") + 
-                "\nSpO2 Data Points: " + (data.sp02 ? data.sp02.length : "No data") + 
-                "\nChest Movement Data Points: " + (data.strain ? data.strain.length : "No data");
+            sensorDataDisplay.innerText = 
+                `Heart Rate Data Points: ${data.heartrate ? data.heartrate.length : "No data"}\n` +
+                `SpO2 Data Points: ${data.sp02 ? data.sp02.length : "No data"}\n` +
+                `Chest Movement Data Points: ${data.strain ? data.strain.length : "No data"}`;
     
-            // Automatically run ML once data is loaded
+            // Step 4: Automatically Run ML Prediction
             runMLPrediction(data);
     
         } catch (error) {
             console.error("Error fetching sensor data:", error);
-            document.getElementById("loadingMessage").innerText = "Failed to load data!";
+            loadingMessage.innerText = "Failed to load data! Please try again!";
         }
     });
 
     async function runMLPrediction(sensorData) {
-        document.getElementById("predictionResult").innerText = "Running ML Prediction... Please wait.";
+        const predictionDisplay = document.getElementById("predictionResult");
     
         try {
+            // Step 5: Display "Analyzing..." Message
+            predictionDisplay.innerText = "Analyzing data... Please wait.";
+            
             let response = await fetch(PREDICTION_URL, {
                 method: "POST",
                 mode: "cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(sensorData)
             });
+
+            if (!response.ok) throw new Error("Failed to run ML prediction");
     
             let result = await response.json();
             console.log("ML Prediction Result:", result);
     
-            // Display Prediction Result
+            // Step 6: Display Final ML Prediction Result
             if (result.total_apnea_events !== undefined) {
-                document.getElementById("predictionResult").innerText = "Total Apnea Events: " + result.total_apnea_events;
+                predictionDisplay.innerText = `Total Apnea Events Detected: ${result.total_apnea_events}`;
             } else {
-                document.getElementById("predictionResult").innerText = "Error: Missing apnea event count!";
+                predictionDisplay.innerText = "Error: Missing apnea event count!";
             }
     
         } catch (error) {
             console.error("Error running ML prediction:", error);
-            document.getElementById("predictionResult").innerText = "Failed to run prediction!";
+            predictionDisplay.innerText = "Failed to run prediction! Please try again.";
         }
     }
 
