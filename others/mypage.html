@@ -78,6 +78,14 @@
       </div> <br><br>
     </div>
 
+    <button id="loadDataBtn" class="btn btn-primary">Load Sensor Data & Run ML</button>
+    <p id="loadingMessage">Loading</p>
+    <pre id="sensorData"></pre>
+    
+    <h3>Prediction Result:</h3>
+    <pre id="predictionResult">Waiting for prediction...</pre>
+
+
   </div>
 
   <script>
@@ -140,6 +148,68 @@
     document.addEventListener("DOMContentLoaded", () => {
         generateCalendar(currentMonth, currentYear);
     });
+
+    const API_BASE_URL = "https://mdd-k92n.onrender.com"
+    const PROXY_URL = `${API_BASE_URL}/fetch_data`; 
+    const PREDICTION_URL = `${API_BASE_URL}/predict`;
+
+    document.getElementById("loadDataBtn").addEventListener("click", async function () {
+        document.getElementById("loadingMessage").innerText = "Loading data... Please wait.";
+    
+        try {
+            let response = await fetch(PROXY_URL, {
+                method: "GET",
+                mode: "cors",
+                headers: { "Content-Type": "application/json" }
+            });
+    
+            let data = await response.json();
+            console.log("Fetched Sensor Data:", data);
+    
+            document.getElementById("loadingMessage").innerText = "Data loaded successfully!";
+            
+            // Display a summary instead of raw data
+            document.getElementById("sensorData").innerText = 
+                "Heart Rate Data Points: " + (data.heartrate ? data.heartrate.length : "No data") + 
+                "\nSpO2 Data Points: " + (data.sp02 ? data.sp02.length : "No data") + 
+                "\nChest Movement Data Points: " + (data.strain ? data.strain.length : "No data");
+    
+            // Automatically run ML once data is loaded
+            runMLPrediction(data);
+    
+        } catch (error) {
+            console.error("Error fetching sensor data:", error);
+            document.getElementById("loadingMessage").innerText = "Failed to load data!";
+        }
+    });
+
+    async function runMLPrediction(sensorData) {
+        document.getElementById("predictionResult").innerText = "Running ML Prediction... Please wait.";
+    
+        try {
+            let response = await fetch(PREDICTION_URL, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(sensorData)
+            });
+    
+            let result = await response.json();
+            console.log("ML Prediction Result:", result);
+    
+            // Display Prediction Result
+            if (result.total_apnea_events !== undefined) {
+                document.getElementById("predictionResult").innerText = "Total Apnea Events: " + result.total_apnea_events;
+            } else {
+                document.getElementById("predictionResult").innerText = "Error: Missing apnea event count!";
+            }
+    
+        } catch (error) {
+            console.error("Error running ML prediction:", error);
+            document.getElementById("predictionResult").innerText = "Failed to run prediction!";
+        }
+    }
+
   </script>
 
   
