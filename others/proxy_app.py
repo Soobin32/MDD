@@ -135,7 +135,7 @@ def process_and_predict(data):
         # Extract each sensor dataset separately
         df_hr = pd.DataFrame(data.get("heartrate", []))
         df_spo2 = pd.DataFrame(data.get("sp02", []))
-        df_breathing = pd.DataFrame(data.get("strain", []))
+        df_strain = pd.DataFrame(data.get("strain", []))
 
         # Ensure "value" column exists in all DataFrames
         for df in [df_hr, df_spo2, df_strain]:
@@ -149,7 +149,7 @@ def process_and_predict(data):
 
         # Ensure equal lengths before merging
         min_len = min(len(df_hr), len(df_spo2), len(df_strain))
-        df_hr, df_spo2, df_breathing = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_breathing.iloc[:min_len]
+        df_hr, df_spo2, df_strain = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_strain.iloc[:min_len]
 
         # Merge into a single DataFrame
         merged_df = pd.DataFrame({
