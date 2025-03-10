@@ -56,13 +56,13 @@ body {
     font-size: bold;
 }
 
-/* Upload Button Positioned Above the Calendar 
+/* Upload Button Positioned Above the Calendar */
 .calendar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-}*/
+}
 
 #loadDataBtn {
     background-color: #fcfcfc;
@@ -213,7 +213,6 @@ h5 {
 }
 
 .result-container pre {
-    background-color: #201a57;
     color: #fcfcfc;
     padding: 15px;
     border-radius: 8px;
@@ -223,7 +222,6 @@ h5 {
 /* Loading & Prediction Text */
 #loadingMessage, #predictionResult {
     font-size: 1.2rem;
-    font-weight: bold;
     color: #fcfcfc;
     margin-top: 10px;
 }
