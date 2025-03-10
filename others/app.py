@@ -138,6 +138,8 @@ def predict():
         return jsonify({"error": str(e)})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003) # runs the Flask App - starts the Flask server, waits for requests to come in, when a request is received, Flask routes it to the correct function
+    port = int(os.environ.get("PORT", 5000))  # Use Render's assigned port
+    app.run(debug=True, host="0.0.0.0", port=port)
+    # runs the Flask App - starts the Flask server, waits for requests to come in, when a request is received, Flask routes it to the correct function
     # app.run run whatever was intiated with @app.route
     # post request made to /prediction -> runs predict() function
