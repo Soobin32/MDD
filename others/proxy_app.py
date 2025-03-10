@@ -132,15 +132,10 @@ def process_and_predict(data):
     """Preprocess sensor data & run it through the ML model."""
     print("Processing data: ", data)
     try:
-        # Extract sensor data
-        hr_data = data.get("heartrate", [])
-        spo2_data = data.get("sp02", [])
-        strain_data = data.get("strain", [])
-
-        # Convert lists to DataFrames
-        df_hr = pd.DataFrame(hr_data)
-        df_spo2 = pd.DataFrame(spo2_data)
-        df_strain = pd.DataFrame(strain_data)
+        # Extract each sensor dataset separately
+        df_hr = pd.DataFrame(data.get("heartrate", []))
+        df_spo2 = pd.DataFrame(data.get("sp02", []))
+        df_breathing = pd.DataFrame(data.get("strain", []))
 
         # Ensure "value" column exists in all DataFrames
         for df in [df_hr, df_spo2, df_strain]:
@@ -152,16 +147,9 @@ def process_and_predict(data):
         df_spo2["value"] = pd.to_numeric(df_spo2["value"], errors="coerce")
         df_strain["value"] = pd.to_numeric(df_strain["value"], errors="coerce")
 
-        # Remove invalid values (e.g., -999 or extreme values)
-        df_hr = df_hr[(df_hr["value"] >= 30) & (df_hr["value"] <= 200)]
-        df_spo2 = df_spo2[(df_spo2["value"] >= 70) & (df_spo2["value"] <= 100)]
-        df_strain = df_strain[(df_strain["value"] >= 0) & (df_strain["value"] <= 10)]  # Adjust based on expected strain range
-
         # Ensure equal lengths before merging
         min_len = min(len(df_hr), len(df_spo2), len(df_strain))
-        df_hr = df_hr.iloc[:min_len]
-        df_spo2 = df_spo2.iloc[:min_len]
-        df_strain = df_strain.iloc[:min_len]
+        df_hr, df_spo2, df_breathing = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_breathing.iloc[:min_len]
 
         # Merge into a single DataFrame
         merged_df = pd.DataFrame({
@@ -177,8 +165,10 @@ def process_and_predict(data):
         print("✅ Preprocessed Data (First 5 Samples):")
         print(merged_df.head())
 
+        print("Model prediction started...")
         # Run model prediction
         prediction = model.predict(values, batch_size=1)
+        print("Model prediction completed.")
 
         # Convert probabilities to binary classification - 1=apnea, 0=normal
         pred_binary = np.squeeze((prediction > 0.5).astype(int))
