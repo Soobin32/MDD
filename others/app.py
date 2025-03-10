@@ -135,6 +135,9 @@ def predict():
         data = request.get_json() # extracts JSON data from the HTTP request
         print("Received data:", data)
 
+        if not data:
+            raise ValueError("No data received in request")
+            
         result = process_and_predict(data) # calls the function to generate predictions
         
         print("Prediction result", result)
@@ -142,7 +145,7 @@ def predict():
 
     except Exception as e:
         print("Error:", e)
-        return jsonify({"error": str(e)})
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def home():
@@ -156,7 +159,7 @@ def add_cors_headers(response):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5003))) # Use Render's assigned port
+    app.run(debug=False, host="0.0.0.0", port=int(os.getenv("PORT", 5003))) # Use Render's assigned port
     # runs the Flask App - starts the Flask server, waits for requests to come in, when a request is received, Flask routes it to the correct function
     # app.run run whatever was intiated with @app.route
     # post request made to /prediction -> runs predict() function
