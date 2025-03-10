@@ -17,6 +17,9 @@ import json
 import subprocess  # To run get_token.py
 from datetime import datetime, timedelta
 
+app = Flask(__name__)
+CORS(app, supports_credentials=True, origins="*", methods=["GET", "POST", "OPTIONS"], allow_headers=["*"])
+
 
 # Arduino API credentials
 CLIENT_ID = "s6SgKndbcK7pC7FyawZRJT1fRV4GPuFD"
