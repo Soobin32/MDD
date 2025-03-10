@@ -20,16 +20,16 @@ body {
 
 /* Container Styling - wrapper element used to structure and organise content in a webpage */
 .main-container { 
+    width: 90%;
+    max-width: 900px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center items */
+    align-items: center;
     padding: 20px;
-    gap: 30px;
-    width: 100%;
 }
 
 .calendar-container {
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     background-color: #0c0c19;
     padding: 20px;
@@ -56,13 +56,13 @@ body {
     font-size: bold;
 }
 
-/* Upload Button Positioned Above the Calendar */
+/* Upload Button Positioned Above the Calendar 
 .calendar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-}
+}*/
 
 #loadDataBtn {
     background-color: #fcfcfc;
@@ -100,15 +100,13 @@ body {
 
 /* Health Metrics Section */
 .metrics-container {
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     background-color: #0c0c19;
     padding: 20px;
-    position: absolute; /*position the container relative to the entire page*/
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    margin-top: 500px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px; /* Space below calendar */
 }
 
 .metric-card {
@@ -199,7 +197,7 @@ h5 {
     color: #dc3545;
 }
 result-container {
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     background-color: #0c0c19;
     padding: 20px;
@@ -211,7 +209,7 @@ result-container {
 .result-container h3 {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #fff;
+    color: #fcfcfc;
 }
 
 .result-container pre {
@@ -222,3 +220,28 @@ result-container {
     font-size: 1rem;
 }
 
+/* Loading & Prediction Text */
+#loadingMessage, #predictionResult {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fcfcfc;
+    margin-top: 10px;
+}
+
+/* Error Message */
+.error {
+    color: #ff4c4c;
+    font-weight: bold;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .calendar-container, .metrics-container, .result-container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    #loadDataBtn {
+        width: 100%;
+    }
+}
