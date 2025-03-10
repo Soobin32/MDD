@@ -17,7 +17,7 @@ os.environ["TF_TRT_ALLOW_ENGINE_NATIVE_SEGMENT_EXECUTION"] = "0"
 # Create a Flask application instance (initialisation)
 app = Flask(__name__)
 # Set up CORS for allowing specific origins (for your HTML served on 127.0.0.1:8000)
-CORS(app, resources={r"/*": {"origins": "https://sleepykeepy.com"}})
+CORS(app, supports_credentials=True, origins="*", methods=["GET", "POST", "OPTIONS"], allow_headers=["*"])
 print("Flask app is starting...")
 
 
