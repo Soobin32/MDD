@@ -36,7 +36,7 @@
     <div class="calendar-container">
       <div class="calendar-top">
         <h2 class="calendar-title">My Page</h2>
-        <button class="upload-btn">Upload New</button>
+        <button id="loadDataBtn" class="btn btn-primary">Load Sensor Data & Run ML</button>
       </div>
       <div class="calendar-header">
         <span class="nav-arrow" onclick="changeMonth(-1)">&#x276E;</span>
@@ -78,13 +78,13 @@
       </div> <br><br>
     </div>
 
-    <button id="loadDataBtn" class="btn btn-primary">Load Sensor Data & Run ML</button>
-    <p id="loadingMessage">Loading</p>
-    <pre id="sensorData"></pre>
-    
-    <h3>Prediction Result:</h3>
-    <pre id="predictionResult">Waiting for prediction...</pre>
-
+    <div class="result-container">
+        <p id="loadingMessage"></p>
+        <pre id="sensorData"></pre>
+        
+        <h3>Prediction Result:</h3>
+        <pre id="predictionResult">Waiting for prediction...</pre>
+    </div>
 
   </div>
 
