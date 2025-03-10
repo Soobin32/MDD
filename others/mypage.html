@@ -67,19 +67,19 @@
       <h4>Recent Data</h4>
       <div class="metric-card">
         <span>Average Heart Rate</span>
-        <span>88.0 BPM</span>
+        <span id="avgHeartRate">88.0 BPM</span>
       </div>
       <div class="metric-card">
         <span>Average SpO2</span>
-        <span>98.0%</span>
+        <span id="avgSpO2">98.0%</span>
       </div>
       <div class="metric-card">
         <span>Chest Movement</span>
-        <span>Normal</span>
+        <span id="chestMovement">Normal</span>
       </div>
       <div class="metric-card">
         <span>Number of Sleep Apnea Detected</span>
-        <span>2</span>
+        <span id="apneaCount">2</span>
       </div> <br><br>
     </div>
 
@@ -220,6 +220,13 @@
             // Step 6: Display Final ML Prediction Result
             if (result.total_apnea_events !== undefined) {
                 predictionDisplay.innerText = `Total Apnea Events Detected: ${result.total_apnea_events}`;
+
+                // Update metric container dynamically
+                document.getElementById("avgHeartRate").innerText = result.average_heart_rate + " BPM";
+                document.getElementById("avgSpO2").innerText = result.average_spo2 + "%";
+                document.getElementById("chestMovement").innerText = result.chest_movement;
+                document.getElementById("apneaCount").innerText = result.total_apnea_events;
+
             } else {
                 predictionDisplay.innerText = "Error: Missing apnea event count!";
             }
