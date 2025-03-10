@@ -10,6 +10,10 @@ import numpy as np # for numerical operations
 import tensorflow as tf # loads and runs ML model
 import os
 
+# 🛑 Disable GPU usage to prevent CUDA errors
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["TF_TRT_ALLOW_ENGINE_NATIVE_SEGMENT_EXECUTION"] = "0"
+
 # Create a Flask application instance (initialisation)
 app = Flask(__name__)
 # Set up CORS for allowing specific origins (for your HTML served on 127.0.0.1:8000)
@@ -139,6 +143,10 @@ def predict():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)})
+
+@app.route('/')
+def home():
+    return "API is running!", 200
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # Use Render's assigned port
