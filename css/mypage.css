@@ -11,7 +11,7 @@ body {
     even when their size is unknown or dynamic. 
     It is particularly useful for building responsive designs.*/
     flex-direction: column; /* arranges contents vertically */
-    /*align-items: center; /* centers contents horizontally */
+    align-items: center; /* centers contents horizontally */
     /*justify-content: center; /* centers contents vertically */
     min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
     /* viewport: visible area of a webpage - changes depending on the device and window size 
@@ -64,15 +64,19 @@ body {
     margin-bottom: 10px;
 }
 
+/* Load Data Button */
 #loadDataBtn {
     background-color: #fcfcfc;
     color: #0c0c19;
-    padding: 8px 15px;
+    padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
     border: none;
     font-size: 1rem;
     margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .calendar {
@@ -199,22 +203,22 @@ h5 {
 .result-container {
     width: 100%;
     max-width: 800px;
-    background-color: #0c0c19;
     padding: 20px;
-    border-radius: 10px;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .result-container h3 {
     font-size: 1.5rem;
     font-weight: bold;
     color: #fcfcfc;
+    text-align: center;
 }
 
 .result-container pre {
+    background: none;
     color: #fcfcfc;
-    padding: 15px;
+    padding: 10px;
     border-radius: 8px;
     font-size: 1rem;
 }
