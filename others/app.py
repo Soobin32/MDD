@@ -148,6 +148,13 @@ def predict():
 def home():
     return "API is running!", 200
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=int(os.getenv("PORT", 5000))) # Use Render's assigned port
     # runs the Flask App - starts the Flask server, waits for requests to come in, when a request is received, Flask routes it to the correct function
