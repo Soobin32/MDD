@@ -11,7 +11,7 @@ body {
     even when their size is unknown or dynamic. 
     It is particularly useful for building responsive designs.*/
     flex-direction: column; /* arranges contents vertically */
-    align-items: center; /* centers contents horizontally */
+    /* align-items: center; /* centers contents horizontally */
     /*justify-content: center; /* centers contents vertically */
     min-height: 100vh; /*ensures the body takes up at least the full height of the viewport */
     /* viewport: visible area of a webpage - changes depending on the device and window size 
@@ -26,6 +26,9 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
 }
 
 .calendar-container {
