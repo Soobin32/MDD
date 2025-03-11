@@ -119,7 +119,7 @@ def fetch_data():
                 # Check if there is more data (pagination)
                 next_page = data.get("links", {}).get("next")  # Arduino API provides 'next' page link
                 if next_page:
-                print("Fetching next page for strain data...")  # Debugging log
+                    print("Fetching next page for strain data...")  # Debugging log
             else:
                 print(f"⚠️ Failed to fetch {variable}: {response.text}")
                 break  # Stop if an error occurs
@@ -137,7 +137,7 @@ def fetch_data():
             )
             next_page = strain_data.get("links", {}).get("next")  # Check for next page
             if next_page:
-                    print(f"Fetching next page for {variable}...")  # Debugging log
+                print(f"Fetching next page for {variable}...")  # Debugging log
         else:
             print(f"⚠️ Failed to fetch strain data: {strain_response.text}")
             break  # Stop if an error occurs
