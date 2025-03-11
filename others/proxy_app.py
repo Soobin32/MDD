@@ -46,7 +46,7 @@ STRAIN_THING_ID = "e9b06dd0-70c3-41bf-bfd7-a9d84b985255"
 
 HR_SPO2_PROPERTY_IDS = {
     "heartrate": "d0e35245-cbbb-4676-9021-9b0612e4c674",
-    "sp02": "81d9530f-ec85-4dce-97a9-c04f1cfad0b5"
+    "spO2": "81d9530f-ec85-4dce-97a9-c04f1cfad0b5"
 }
 STRAIN_PROPERTY_ID = "80951354-1c52-476c-bb1f-d8e83624ae96"
 
@@ -102,7 +102,7 @@ def fetch_data():
     end_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-    historical_data = {}
+    historical_data = {"heartrate": [], "spO2": [], "strain": []}
 
     # Fetch Heart Rate & SpO2
     for variable, property_id in HR_SPO2_PROPERTY_IDS.items():
@@ -148,7 +148,7 @@ def process_and_predict(data):
     try:
         # Extract each sensor dataset separately
         df_hr = pd.DataFrame(data.get("heartrate", []))
-        df_spo2 = pd.DataFrame(data.get("sp02", []))
+        df_spo2 = pd.DataFrame(data.get("spO2", []))
         df_strain = pd.DataFrame(data.get("strain", []))
 
         # Ensure "value" column exists in all DataFrames
