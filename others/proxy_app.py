@@ -107,40 +107,40 @@ def fetch_data():
     # Fetch Heart Rate & SpO2
     for variable, property_id in HR_SPO2_PROPERTY_IDS.items():
         url = f"https://api2.arduino.cc/iot/v2/things/{HR_SPO2_THING_ID}/properties/{property_id}/timeseries"
-        next_page = url  # Start with the base URL
-        while next_page:
-            response = requests.get(next_page, headers=headers, params={"from": start_time, "to": end_time, "interval": 5})
-            if response.status_code == 200:
-                data = response.json()
-                historical_data[variable].extend(
-                    [{"time": entry["time"], "value": entry["value"]} for entry in data.get("data", [])]
-                )
-
-                # Check if there is more data (pagination)
-                next_page = data.get("links", {}).get("next")  # Arduino API provides 'next' page link
-                if next_page:
-                    print("Fetching next page for strain data...")  # Debugging log
-            else:
-                print(f"⚠️ Failed to fetch {variable}: {response.text}")
-                break  # Stop if an error occurs
+        
+        response = requests.get(url, headers=headers, params={
+            "from": start_time,
+            "to": end_time,
+            "interval": 5, 
+            "limit": 36000  # ⬅️ Increase limit to fetch up to 36,000 records
+        })
+        
+        if response.status_code == 200:
+            data = response.json()
+            historical_data[variable] = [
+                {"time": entry["time"], "value": entry["value"]}
+                for entry in data.get("data", [])
+            ]
+        else:
+            print(f"⚠️ Failed to fetch {variable}: {response.text}")
 
     # Fetch Breathing Strain
     strain_url = f"https://api2.arduino.cc/iot/v2/things/{STRAIN_THING_ID}/properties/{STRAIN_PROPERTY_ID}/timeseries"
-    next_page = strain_url
-    while next_page:
-        strain_response = requests.get(next_page, headers=headers, params={"from": start_time, "to": end_time, "interval": 5})
+    strain_response = requests.get(strain_url, headers=headers, params={
+        "from": start_time,
+        "to": end_time,
+        "interval": 5,
+        "limit": 36000  # ⬅️ Same increased limit for strain data
+    })
 
-        if strain_response.status_code == 200:
-            strain_data = strain_response.json()
-            historical_data["strain"].extend(
-                [{"time": entry["time"], "value": entry["value"]} for entry in strain_data.get("data", [])]
-            )
-            next_page = strain_data.get("links", {}).get("next")  # Check for next page
-            if next_page:
-                print(f"Fetching next page for {variable}...")  # Debugging log
-        else:
-            print(f"⚠️ Failed to fetch strain data: {strain_response.text}")
-            break  # Stop if an error occurs
+    if strain_response.status_code == 200:
+        strain_data = strain_response.json()
+        historical_data["strain"] = [
+            {"time": entry["time"], "value": entry["value"]}
+            for entry in strain_data.get("data", [])
+        ]
+    else:
+        print(f"⚠️ Failed to fetch strain data: {strain_response.text}")
 
     return jsonify(historical_data)
 
