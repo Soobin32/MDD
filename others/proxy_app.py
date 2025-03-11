@@ -98,49 +98,52 @@ def fetch_data():
         return jsonify({"error": "Failed to retrieve a valid token"}), 401
 
     now = datetime.utcnow()
-    start_time = (now - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
     end_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Fetch data in smaller time chunks to bypass the 1000-record limit
+    time_chunks = []
+    chunk_size_hours = 12  # Fetch in 12-hour chunks (adjust if necessary)
+    
+    for i in range(14):  # 14 chunks of 12 hours = 7 days
+        chunk_start = now - timedelta(hours=(i + 1) * chunk_size_hours)
+        chunk_end = now - timedelta(hours=i * chunk_size_hours)
+        time_chunks.append((chunk_start.strftime("%Y-%m-%dT%H:%M:%SZ"), chunk_end.strftime("%Y-%m-%dT%H:%M:%SZ")))
 
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     historical_data = {"heartrate": [], "spO2": [], "strain": []}
 
-    # Fetch Heart Rate & SpO2
+    # Fetch Heart Rate & SpO2 in smaller chunks
     for variable, property_id in HR_SPO2_PROPERTY_IDS.items():
-        url = f"https://api2.arduino.cc/iot/v2/things/{HR_SPO2_THING_ID}/properties/{property_id}/timeseries"
-        
-        response = requests.get(url, headers=headers, params={
-            "from": start_time,
-            "to": end_time,
-            "interval": 5, 
-            "limit": 36000  # ⬅️ Increase limit to fetch up to 36,000 records
-        })
-        
+        for chunk_start, chunk_end in time_chunks:
+            response = requests.get(
+                f"https://api2.arduino.cc/iot/v2/things/{HR_SPO2_THING_ID}/properties/{property_id}/timeseries",
+                headers=headers,
+                params={"from": chunk_start, "to": chunk_end, "interval": 5, "limit": 1000}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                historical_data[variable].extend(
+                    [{"time": entry["time"], "value": entry["value"]} for entry in data.get("data", [])]
+                )
+            else:
+                print(f"⚠️ Failed to fetch {variable} for {chunk_start} - {chunk_end}: {response.text}")
+
+    # Fetch Breathing Strain in smaller chunks
+    for chunk_start, chunk_end in time_chunks:
+        response = requests.get(
+            f"https://api2.arduino.cc/iot/v2/things/{STRAIN_THING_ID}/properties/{STRAIN_PROPERTY_ID}/timeseries",
+            headers=headers,
+            params={"from": chunk_start, "to": chunk_end, "interval": 5, "limit": 1000}
+        )
+
         if response.status_code == 200:
-            data = response.json()
-            historical_data[variable] = [
-                {"time": entry["time"], "value": entry["value"]}
-                for entry in data.get("data", [])
-            ]
+            strain_data = response.json()
+            historical_data["strain"].extend(
+                [{"time": entry["time"], "value": entry["value"]} for entry in strain_data.get("data", [])]
+            )
         else:
-            print(f"⚠️ Failed to fetch {variable}: {response.text}")
-
-    # Fetch Breathing Strain
-    strain_url = f"https://api2.arduino.cc/iot/v2/things/{STRAIN_THING_ID}/properties/{STRAIN_PROPERTY_ID}/timeseries"
-    strain_response = requests.get(strain_url, headers=headers, params={
-        "from": start_time,
-        "to": end_time,
-        "interval": 5,
-        "limit": 36000  # ⬅️ Same increased limit for strain data
-    })
-
-    if strain_response.status_code == 200:
-        strain_data = strain_response.json()
-        historical_data["strain"] = [
-            {"time": entry["time"], "value": entry["value"]}
-            for entry in strain_data.get("data", [])
-        ]
-    else:
-        print(f"⚠️ Failed to fetch strain data: {strain_response.text}")
+            print(f"⚠️ Failed to fetch strain data for {chunk_start} - {chunk_end}: {response.text}")
 
     return jsonify(historical_data)
 
