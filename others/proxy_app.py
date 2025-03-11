@@ -148,31 +148,31 @@ def process_and_predict(data):
     try:
         # Extract each sensor dataset separately
         df_hr = pd.DataFrame(data.get("heartrate", []))
-        df_spo2 = pd.DataFrame(data.get("spO2", []))
+        df_spO2 = pd.DataFrame(data.get("spO2", []))
         df_strain = pd.DataFrame(data.get("strain", []))
 
         # Ensure "value" column exists in all DataFrames
-        for df in [df_hr, df_spo2, df_strain]:
+        for df in [df_hr, df_spO2, df_strain]:
             if "value" not in df:
                 raise ValueError("Missing 'value' column in one of the datasets.")
 
         # Ensure all data is numeric
         df_hr["value"] = pd.to_numeric(df_hr["value"], errors="coerce")
-        df_spo2["value"] = pd.to_numeric(df_spo2["value"], errors="coerce")
+        df_spO2["value"] = pd.to_numeric(df_spO2["value"], errors="coerce")
         df_strain["value"] = pd.to_numeric(df_strain["value"], errors="coerce")
 
         # Compute averages
         avg_hr = df_hr["value"].mean() if not df_hr.empty else None
-        avg_spo2 = df_spo2["value"].mean() if not df_spo2.empty else None
+        avg_spO2 = df_spO2["value"].mean() if not df_spO2.empty else None
         
         # Ensure equal lengths before merging
-        min_len = min(len(df_hr), len(df_spo2), len(df_strain))
-        df_hr, df_spo2, df_strain = df_hr.iloc[:min_len], df_spo2.iloc[:min_len], df_strain.iloc[:min_len]
+        min_len = min(len(df_hr), len(df_spO2), len(df_strain))
+        df_hr, df_spO2, df_strain = df_hr.iloc[:min_len], df_spO2.iloc[:min_len], df_strain.iloc[:min_len]
 
         # Merge into a single DataFrame
         merged_df = pd.DataFrame({
             "HR": df_hr["value"].values,
-            "SpO2": df_spo2["value"].values,
+            "SpO2": df_spO2["value"].values,
             "Breathing": df_strain["value"].values
         })
 
@@ -214,7 +214,7 @@ def process_and_predict(data):
         return {
             "total_apnea_events": int(apnea_event_count),
             "average_heart_rate": round(avg_hr, 1) if avg_hr is not None else "No Data",
-            "average_spo2": round(avg_spo2, 1) if avg_spo2 is not None else "No Data",
+            "average_spO2": round(avg_spO2, 1) if avg_spO2 is not None else "No Data",
             "chest_movement": chest_status
         }
 
