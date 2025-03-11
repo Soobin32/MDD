@@ -145,6 +145,10 @@ def fetch_data():
         else:
             print(f"⚠️ Failed to fetch strain data for {chunk_start} - {chunk_end}: {response.text}")
 
+        # ✅ **Ensure Proper Chronological Order (Oldest → Newest)**
+        for key in historical_data:
+            historical_data[key].sort(key=lambda x: x["time"])  # Sort by time (ascending)
+
     return jsonify(historical_data)
 
 
