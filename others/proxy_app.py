@@ -122,7 +122,7 @@ def fetch_data():
             response = requests.get(
                 f"https://api2.arduino.cc/iot/v2/things/{HR_SPO2_THING_ID}/properties/{property_id}/timeseries",
                 headers=headers,
-                params={"from": chunk_start, "to": chunk_end, "interval": 5, "limit": 1000}
+                params={"from": chunk_start, "to": chunk_end, "interval": 5}
             )
             
             if response.status_code == 200:
