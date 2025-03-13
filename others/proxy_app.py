@@ -109,6 +109,10 @@ def fetch_data():
         chunk_end = now - timedelta(hours=i * chunk_size_hours)
         time_chunks.append((chunk_start.strftime("%Y-%m-%dT%H:%M:%SZ"), chunk_end.strftime("%Y-%m-%dT%H:%M:%SZ")))
 
+    print("✅ Generated Time Chunks (Oldest → Newest):")
+    for start, end in time_chunks:
+        print(f"⏳ {start} → {end}")
+
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     historical_data = {"heartrate": [], "spO2": [], "strain": []}
 
