@@ -104,7 +104,7 @@ def fetch_data():
     time_chunks = []
     chunk_size_hours = 12  # Fetch in 12-hour chunks (adjust if necessary)
     
-    for i in range(14):  # 14 chunks of 12 hours = 7 days
+    for i in reversed(range(14)):  # 14 chunks of 12 hours = 7 days
         chunk_start = now - timedelta(hours=(i + 1) * chunk_size_hours)
         chunk_end = now - timedelta(hours=i * chunk_size_hours)
         time_chunks.append((chunk_start.strftime("%Y-%m-%dT%H:%M:%SZ"), chunk_end.strftime("%Y-%m-%dT%H:%M:%SZ")))
@@ -144,10 +144,6 @@ def fetch_data():
             )
         else:
             print(f"⚠️ Failed to fetch strain data for {chunk_start} - {chunk_end}: {response.text}")
-
-        # ✅ **Ensure Proper Chronological Order (Oldest → Newest)**
-        for key in historical_data:
-            historical_data[key].sort(key=lambda x: x["time"])  # Sort by time (ascending)
 
     return jsonify(historical_data)
 
