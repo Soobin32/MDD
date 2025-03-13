@@ -92,7 +92,7 @@ def get_token():
 # ✅ Fetch Sensor Data from Arduino IoT
 @app.route('/fetch_data', methods=['GET'])
 def fetch_data():
-    """Fetch historical sensor data from Arduino Cloud API."""
+    """Fetch historical sensor data from Arduino Cloud API with pagination."""
     token = get_token()
     if not token:
         return jsonify({"error": "Failed to retrieve a valid token"}), 401
@@ -116,38 +116,56 @@ def fetch_data():
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     historical_data = {"heartrate": [], "spO2": [], "strain": []}
 
-    # Fetch Heart Rate & SpO2 in smaller chunks
-    for variable, property_id in HR_SPO2_PROPERTY_IDS.items():
-        for chunk_start, chunk_end in time_chunks:
+    # ✅ Function for paginated data fetching
+    def fetch_paginated_data(variable, property_id, chunk_start, chunk_end):
+        """Fetches paginated sensor data from Arduino Cloud API."""
+        all_records = []
+        next_from = chunk_start  # Start fetching from the beginning of the chunk
+
+        while True:
             response = requests.get(
                 f"https://api2.arduino.cc/iot/v2/things/{HR_SPO2_THING_ID}/properties/{property_id}/timeseries",
                 headers=headers,
-                params={"from": chunk_start, "to": chunk_end, "interval": 5}
+                params={"from": next_from, "to": chunk_end, "interval": 5, "limit": 1000}  # Fetch max 1000 per request
             )
-            
+
             if response.status_code == 200:
                 data = response.json()
-                historical_data[variable].extend(
-                    [{"time": entry["time"], "value": entry["value"]} for entry in data.get("data", [])]
-                )
+                records = [{"time": entry["time"], "value": entry["value"]} for entry in data.get("data", [])]
+
+                # ✅ Append newly fetched data
+                all_records.extend(records)
+
+                # Debugging: Print progress
+                print(f"✅ {variable} - Retrieved {len(records)} points from {next_from} to {chunk_end}")
+
+                # ✅ If fewer than 1000 records were returned, it means we got the last chunk. Stop fetching.
+                if len(records) < 1000:
+                    break  
+
+                # ✅ Otherwise, update `next_from` to **one second after** the last retrieved timestamp
+                last_time = records[-1]["time"]
+                next_from = (datetime.fromisoformat(last_time.replace("Z", "")) + timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
             else:
                 print(f"⚠️ Failed to fetch {variable} for {chunk_start} - {chunk_end}: {response.text}")
+                break  # Stop fetching on error
 
-    # Fetch Breathing Strain in smaller chunks
+        return all_records
+
+    # Fetch Heart Rate & SpO2 in paginated chunks
+    for variable, property_id in HR_SPO2_PROPERTY_IDS.items():
+        for chunk_start, chunk_end in time_chunks:
+            historical_data[variable].extend(fetch_paginated_data(variable, property_id, chunk_start, chunk_end))
+
+    # Fetch Breathing Strain in paginated chunks
     for chunk_start, chunk_end in time_chunks:
-        response = requests.get(
-            f"https://api2.arduino.cc/iot/v2/things/{STRAIN_THING_ID}/properties/{STRAIN_PROPERTY_ID}/timeseries",
-            headers=headers,
-            params={"from": chunk_start, "to": chunk_end, "interval": 5, "limit": 1000}
-        )
+        historical_data["strain"].extend(fetch_paginated_data("strain", STRAIN_PROPERTY_ID, chunk_start, chunk_end))
 
-        if response.status_code == 200:
-            strain_data = response.json()
-            historical_data["strain"].extend(
-                [{"time": entry["time"], "value": entry["value"]} for entry in strain_data.get("data", [])]
-            )
-        else:
-            print(f"⚠️ Failed to fetch strain data for {chunk_start} - {chunk_end}: {response.text}")
+    # ✅ Print final data counts
+    print("✅ Final Data Sizes:")
+    for key, value in historical_data.items():
+        print(f"📊 {key}: {len(value)} records")
 
     return jsonify(historical_data)
 
