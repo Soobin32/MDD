@@ -35,20 +35,21 @@ except Exception as e:
     print(f"Error loading model: {e}")
     model = None  # Set model to None in case of failure
 
-# ✅ Arduino API Credentials
-CLIENT_ID = "s6SgKndbcK7pC7FyawZRJT1fRV4GPuFD"
-CLIENT_SECRET = "Gyt3GzszTd5MfqHtPEsA9swXnyqU837C41NKYP710UzcA3dKcP64PtruURShD0zZ"
+import os
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 TOKEN_URL = "https://api2.arduino.cc/iot/v1/clients/token"
 
-# Arduino API endpoint details
-HR_SPO2_THING_ID = "8fa4357b-69cb-4d75-bbd8-974dddb880f9"
-STRAIN_THING_ID = "e9b06dd0-70c3-41bf-bfd7-a9d84b985255"
+HR_SPO2_THING_ID = os.getenv("HR_SPO2_THING_ID")
+STRAIN_THING_ID = os.getenv("STRAIN_THING_ID")
 
 HR_SPO2_PROPERTY_IDS = {
-    "heartrate": "d0e35245-cbbb-4676-9021-9b0612e4c674",
-    "spO2": "81d9530f-ec85-4dce-97a9-c04f1cfad0b5"
+    "heartrate": os.getenv("HR_SPO2_HEARTRATE_ID"),
+    "spO2": os.getenv("HR_SPO2_SPO2_ID")
 }
-STRAIN_PROPERTY_ID = "80951354-1c52-476c-bb1f-d8e83624ae96"
+STRAIN_PROPERTY_ID = os.getenv("STRAIN_PROPERTY_ID")
+
 
 cached_token = None
 token_expiration = 0  # Store token and expiration globally
