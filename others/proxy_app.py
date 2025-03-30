@@ -1,24 +1,23 @@
+import os
 import numpy as np
 import pandas as pd
-import pickle
-import glob
+import requests
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from tensorflow.keras.models import Model
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import (
     Input, Conv1D, Bidirectional, GRU, Dense, Flatten,
     BatchNormalization, ReLU, Add, MaxPooling1D, Attention
 )
+import tensorflow.keras.backend as K
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
 from imblearn.over_sampling import SMOTE
-#from sklearn.utils.class_weight import compute_class_weight
-from tabulate import tabulate
-from tensorflow.keras.models import Sequential, load_model
-import tensorflow.keras.backend as K # Focal loss instead of binary cross entropy (BCE)
 import tensorflow as tf
-#from sklearn.metrics import precision_recall_curve
-#from sklearn.model_selection import LeaveOneGroupOut
 import matplotlib.pyplot as plt
-#from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from imblearn.over_sampling import SMOTE
+from tabulate import tabulate
+
 
 # 🛑 Disable GPU usage to prevent CUDA errors
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
