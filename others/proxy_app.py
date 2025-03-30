@@ -308,7 +308,7 @@ def process_and_predict(data):
         # Count apnea events
         apnea_index = [i for i in range(len(pred_label)) if pred_label[i] == 1] # stores index positions of apnea events and counts them
         apnea_event_count = len(apnea_index)
-        print("Count before consecutive occurrence filtering: "+ apnea_event_count)
+        print("Count before consecutive occurrence filtering: "+ str(apnea_event_count))
 
         filtered_index = consecutive_occurrence(apnea_index)
         filtered_count = len(filtered_index)
