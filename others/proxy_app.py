@@ -283,7 +283,7 @@ def process_and_predict(data):
         print("Model prediction completed.")
 
         # Convert probabilities to binary classification - 1=apnea, 0=normal
-        pred_binary = np.squeeze((prediction > 0.45).astype(int))
+        pred_binary = np.ravel((prediction > 0.45).astype(int))
 
         # Map predicted data back to the full range
         y_pred_full_range = map_to_full_range(pred_binary, indices, total_length = len(X_raw))
