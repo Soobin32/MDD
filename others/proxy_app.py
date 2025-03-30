@@ -1,15 +1,24 @@
-import os
-import base64
-import json
-import time
-import requests
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pickle
+import glob
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import (
+    Input, Conv1D, Bidirectional, GRU, Dense, Flatten,
+    BatchNormalization, ReLU, Add, MaxPooling1D, Attention
+)
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
+from imblearn.over_sampling import SMOTE
+from sklearn.utils.class_weight import compute_class_weight
+from tabulate import tabulate
+from tensorflow.keras.models import Sequential, load_model
+import tensorflow.keras.backend as K # Focal loss instead of binary cross entropy (BCE)
 import tensorflow as tf
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import datetime
-from datetime import datetime, timedelta
+from sklearn.metrics import precision_recall_curve
+from sklearn.model_selection import LeaveOneGroupOut
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # 🛑 Disable GPU usage to prevent CUDA errors
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -21,12 +30,24 @@ CORS(app, supports_credentials=True, origins="*", methods=["GET", "POST", "OPTIO
 
 print("Flask app is starting...")
 
+# ----------------- Focal Loss -----------------
+def focal_loss(gamma=2., alpha=0.25):
+    def focal_loss_fixed(y_true, y_pred):
+        y_true = K.cast(y_true, tf.float32)
+        epsilon = K.epsilon()
+        y_pred = K.clip(y_pred, epsilon, 1. - epsilon)
+        pt_1 = tf.where(K.equal(y_true, 1), y_pred, K.ones_like(y_pred))
+        pt_0 = tf.where(K.equal(y_true, 0), y_pred, K.zeros_like(y_pred))
+        return -K.mean(alpha * K.pow(1. - pt_1, gamma) * K.log(pt_1)) \
+               -K.mean((1 - alpha) * K.pow(pt_0, gamma) * K.log(1. - pt_0))
+    return focal_loss_fixed
+
 try:
     # Log before loading the model
     print("Attempting to load model...")
 
     # Load the pre-trained model for apnea detection
-    model = tf.keras.models.load_model("model3_fold_2.h5") 
+    model = tf.keras.models.load_model("window20_fold_6.h5", custom_objects={'focal_loss_fixed': focal_loss(gamma=2.0, alpha=0.25)}) 
 
     # Log after loading the model
     print("Model loaded successfully!")
@@ -170,6 +191,40 @@ def fetch_data():
 
     return jsonify(historical_data)
 
+def consecutive_occurrence(unfiltered_count, min_consecutive_gap = 20):
+  # Now apply the consecutive occurrence filtering based on the gap
+  count = unfiltered_count.copy()
+  filtered_apnea_index = []
+  previous_event = None
+  for i in range(len(count)):
+      if previous_event is None:
+          filtered_apnea_index.append(count[i])
+          previous_event = count[i]
+      elif count[i] - previous_event >= min_consecutive_gap:
+          filtered_apnea_index.append(count[i])
+          previous_event = count[i]
+
+  # Print the final filtered apnea events
+  print(f"After filtering consecutive events with a gap < {min_consecutive_gap}s:")
+  print(f"Filtered Apnea occurred {len(filtered_apnea_index)} times")
+  print(f"Filtered Apnea occurred at: {str(filtered_apnea_index)} seconds from start time.")
+
+  return filtered_apnea_index
+
+def map_to_full_range(targets, indices, window_size=10, step=3, total_length=None):
+    # If total_length is None, fall back to the default size
+    if total_length is None:
+        total_length = len(targets) * window_size
+
+    # Initialize an array for the full range of time steps, initially set to zero
+    full_targets = np.zeros(total_length)
+
+    # For each window, assign the prediction to the correct positions in the full array
+    for i, target in zip(indices, targets):
+        full_targets[i:i+window_size] = target  # Map to corresponding window
+
+    return full_targets
+
 
 # ✅ Process Input Data and Make Predictions
 def process_and_predict(data):
@@ -200,31 +255,49 @@ def process_and_predict(data):
         df_hr, df_spO2, df_strain = df_hr.iloc[:min_len], df_spO2.iloc[:min_len], df_strain.iloc[:min_len]
 
         # Merge into a single DataFrame
-        merged_df = pd.DataFrame({
+        X_raw = pd.DataFrame({
             "HR": df_hr["value"].values,
             "SpO2": df_spO2["value"].values,
             "Breathing": df_strain["value"].values
         })
 
-        # Convert to NumPy array
-        values = merged_df.to_numpy().reshape(merged_df.shape[0], 3, 1)
+        window_size = 10
+        step = 3
+
+        X_windows = []
+        indices = []
+
+        for i in range(0, len(X_raw) - window_size + 1, step):
+            X_window = X_raw[i:i+window_size]
+            X_windows.append(X_window)
+            indices.append(i)
+
+        X = np.array(X_windows).astype(np.float32)
 
         # Debugging: Print first 5 rows
-        print("✅ Preprocessed Data (First 5 Samples):")
-        print(merged_df.head())
+        print("✅ Before applying window (First 5 Samples):")
+        print(X_raw.head())
 
         print("Model prediction started...")
         # Run model prediction
-        prediction = model.predict(values, batch_size=1)
+        prediction = model.predict(X)
         print("Model prediction completed.")
 
         # Convert probabilities to binary classification - 1=apnea, 0=normal
-        pred_binary = np.squeeze((prediction > 0.5).astype(int))
+        pred_binary = np.squeeze((prediction > 0.45).astype(int))
+
+        # Map predicted data back to the full range
+        y_pred_full_range = map_to_full_range(pred_binary, indices, total_length = len(X_raw))
 
         # Post-process results
-        pred_label = pred_binary.copy()
-        previous_value = 0
+        pred_label = y_pred_full_range.copy()
 
+        # Total duration of apnea
+        apnea_moments = sum(pred_label)
+        print("Total apnea moments: " + str(apnea_moments) + " s")
+
+        # How many apnea events
+        previous_value = 0
         for i in range(len(pred_label)):
             if pred_label[i] == 1:
                 if previous_value == 1:
@@ -236,13 +309,17 @@ def process_and_predict(data):
         # Count apnea events
         apnea_index = [i for i in range(len(pred_label)) if pred_label[i] == 1] # stores index positions of apnea events and counts them
         apnea_event_count = len(apnea_index)
+        print("Count before consecutive occurrence filtering: "+ apnea_event_count)
+
+        filtered_index = consecutive_occurrence(apnea_index)
+        filtered_count = len(filtered_index)
 
         # Determine chest movement status
-        chest_status = "Normal" if apnea_event_count <= 3 else "Abnormal"
+        chest_status = "Normal" if filtered_count <= 30 else "Abnormal"
 
         # Return results including average values
         return {
-            "total_apnea_events": int(apnea_event_count),
+            "total_apnea_events": int(filtered_count),
             "average_heart_rate": round(avg_hr, 1) if avg_hr is not None else "No Data",
             "average_spO2": round(avg_spO2, 1) if avg_spO2 is not None else "No Data",
             "chest_movement": chest_status
