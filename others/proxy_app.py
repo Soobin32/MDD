@@ -46,7 +46,7 @@ try:
     print("Attempting to load model...")
 
     # Load the pre-trained model for apnea detection
-    model = tf.keras.models.load_model("window20_fold_6.h5", custom_objects={'focal_loss_fixed': focal_loss(gamma=2.0, alpha=0.25)}) 
+    model = tf.keras.models.load_model("others/window20_fold_6.h5", custom_objects={'focal_loss_fixed': focal_loss(gamma=2.0, alpha=0.25)}) 
 
     # Log after loading the model
     print("Model loaded successfully!")
