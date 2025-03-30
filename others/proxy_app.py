@@ -10,15 +10,15 @@ from tensorflow.keras.layers import (
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 from imblearn.over_sampling import SMOTE
-from sklearn.utils.class_weight import compute_class_weight
+#from sklearn.utils.class_weight import compute_class_weight
 from tabulate import tabulate
 from tensorflow.keras.models import Sequential, load_model
 import tensorflow.keras.backend as K # Focal loss instead of binary cross entropy (BCE)
 import tensorflow as tf
-from sklearn.metrics import precision_recall_curve
-from sklearn.model_selection import LeaveOneGroupOut
+#from sklearn.metrics import precision_recall_curve
+#from sklearn.model_selection import LeaveOneGroupOut
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+#from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # 🛑 Disable GPU usage to prevent CUDA errors
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
