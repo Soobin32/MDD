@@ -47,3 +47,4 @@ wrapt==1.17.2
 gunicorn
 imblearn==0.0
 matplotlib==3.5.1
+tabulate==0.9.0
