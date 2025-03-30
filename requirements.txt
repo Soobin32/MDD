@@ -47,5 +47,3 @@ wrapt==1.17.2
 gunicorn
 imblearn==0.0
 matplotlib==3.5.1
-Cython
-scikit-learn==0.24.2
