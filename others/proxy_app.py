@@ -210,7 +210,7 @@ def consecutive_occurrence(unfiltered_count, min_consecutive_gap = 20):
 
   return filtered_apnea_index
 
-def map_to_full_range(targets, indices, window_size=10, step=3, total_length=None):
+def map_to_full_range(targets, indices, window_size=20, step=5, total_length=None):
     # If total_length is None, fall back to the default size
     if total_length is None:
         total_length = len(targets) * window_size
@@ -260,8 +260,8 @@ def process_and_predict(data):
             "Breathing": df_strain["value"].values
         })
 
-        window_size = 10
-        step = 3
+        window_size = 20
+        step = 5
 
         X_windows = []
         indices = []
