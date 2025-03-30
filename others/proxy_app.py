@@ -17,6 +17,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from imblearn.over_sampling import SMOTE
 from tabulate import tabulate
+import time
 
 
 # 🛑 Disable GPU usage to prevent CUDA errors
