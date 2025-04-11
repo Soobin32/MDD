@@ -248,6 +248,7 @@ def process_and_predict(data):
         # Compute averages
         avg_hr = df_hr["value"].mean() if not df_hr.empty else None
         avg_spO2 = df_spO2["value"].mean() if not df_spO2.empty else None
+        avg_strain = df_strain["value"].mean() if not df_strain.empty else None
         
         # Ensure equal lengths before merging
         min_len = min(len(df_hr), len(df_spO2), len(df_strain))
@@ -313,15 +314,12 @@ def process_and_predict(data):
         filtered_index = consecutive_occurrence(apnea_index)
         filtered_count = len(filtered_index)
 
-        # Determine chest movement status
-        chest_status = "Normal" if filtered_count <= 30 else "Abnormal"
-
         # Return results including average values
         return {
             "total_apnea_events": int(filtered_count),
             "average_heart_rate": round(avg_hr, 1) if avg_hr is not None else "No Data",
             "average_spO2": round(avg_spO2, 1) if avg_spO2 is not None else "No Data",
-            "chest_movement": chest_status
+            "average_chest_movement": round(avg_strain, 1) if avg_strain is not None else "No Data"
         }
 
     except Exception as e:
