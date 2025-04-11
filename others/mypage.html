@@ -71,11 +71,11 @@
       </div>
       <div class="metric-card">
         <span>Average SpO2</span>
-        <span id="avgSpO2">98.0%</span>
+        <span id="avgSpO2">98.0 %</span>
       </div>
       <div class="metric-card">
-        <span>Chest Movement</span>
-        <span id="chestMovement">Normal</span>
+        <span>Average Chest Movement</span>
+        <span id="avgchestMovement">0.09 V</span>
       </div>
       <div class="metric-card">
         <span>Number of Sleep Apnea Detected</span>
@@ -224,7 +224,7 @@
                 // Update metric container dynamically
                 document.getElementById("avgHeartRate").innerText = result.average_heart_rate + " BPM";
                 document.getElementById("avgSpO2").innerText = result.average_spO2 + "%";
-                document.getElementById("chestMovement").innerText = result.chest_movement;
+                document.getElementById("avgchestMovement").innerText = result.average_chest_movement + " V"t;
                 document.getElementById("apneaCount").innerText = result.total_apnea_events;
 
             } else {
