@@ -62,7 +62,7 @@ def process_and_predict(data): # takes input sensor data, preprocesses it, and r
         df_spo2.rename(columns={"value": "SpO2"}, inplace=True)
         df_breathing.rename(columns={"value": "Breathing"}, inplace=True)
 
-        # **MERGE WITHOUT CONSIDERING TIMESTAMPS** - Align row-wise
+        # MERGE WITHOUT CONSIDERING TIMESTAMPS - Align row-wise
         min_len = min(len(df_hr), len(df_spo2), len(df_breathing))  # Trim to shortest length
         df_hr = df_hr.iloc[:min_len]  # Trim to match
         df_spo2 = df_spo2.iloc[:min_len]
@@ -75,7 +75,7 @@ def process_and_predict(data): # takes input sensor data, preprocesses it, and r
             "SpO2": df_spo2["SpO2"].values  # Originally column 3
         })
 
-        # **Swap the SpO2 and Breathing columns**
+        # Swap the SpO2 and Breathing columns
         merged_df = merged_df[["HR", "SpO2", "Breathing"]]
 
         # Convert to NumPy array
@@ -84,8 +84,8 @@ def process_and_predict(data): # takes input sensor data, preprocesses it, and r
         # Reshape to (batch_size, 3, 1) for the model
         values = values.reshape(values.shape[0], 3, 1)
 
-        # 🔍 Debug: Print first few merged and swapped values
-        print("✅ Merged and Swapped input data (first 5 samples):")
+        # Debug: Print first few merged and swapped values
+        print("Merged and Swapped input data (first 5 samples):")
         print(values[:5])
 
         print("Model prediction started...")
