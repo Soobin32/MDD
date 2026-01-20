@@ -10,7 +10,7 @@ import numpy as np # for numerical operations
 import tensorflow as tf # loads and runs ML model
 import os
 
-# 🛑 Disable GPU usage to prevent CUDA errors
+# Disable GPU usage to prevent CUDA errors
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ["TF_TRT_ALLOW_ENGINE_NATIVE_SEGMENT_EXECUTION"] = "0"
 
@@ -89,7 +89,7 @@ def process_and_predict(data): # takes input sensor data, preprocesses it, and r
         values = values.reshape(values.shape[0], 3, 1)
 
         # 🔍 Debug: Print first few merged and swapped values
-        print("✅ Merged and Swapped input data (first 5 samples):")
+        print("Merged and Swapped input data (first 5 samples):")
         print(values[:5])
 
         print("Model prediction started...")
