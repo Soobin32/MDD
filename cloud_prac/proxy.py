@@ -39,7 +39,7 @@ GET_TOKEN_SCRIPT = "python3 var/www/cgi-bin/get_token.py"  # Command to run get_
 
 def generate_new_token():
     """Runs get_token.py to generate a new API token."""
-    print("🔄 Running get_token.py to generate a new token...")
+    print("Running get_token.py to generate a new token...")
     subprocess.run(GET_TOKEN_SCRIPT, shell=True, check=True)
     time.sleep(2)  # Wait a bit for token to be written
     return load_token()  # Reload the token after generating
@@ -47,34 +47,34 @@ def generate_new_token():
 def load_token():
     """Load the API token from token.txt, check expiration, and refresh if needed."""
     if not os.path.exists(TOKEN_FILE):
-        print("❌ Token file does not exist! Running get_token.py...")
+        print("Token file does not exist! Running get_token.py...")
         return generate_new_token()
 
     try:
         with open(TOKEN_FILE, "r") as f:
             token = f.read().strip()
             if not token:
-                print("⚠️ Token file is empty! Running get_token.py...")
+                print("Token file is empty! Running get_token.py...")
                 return generate_new_token()
 
             # Decode JWT token to check expiration
             token_parts = token.split(".")
             if len(token_parts) != 3:
-                print("❌ Invalid token format! Running get_token.py...")
+                print("Invalid token format! Running get_token.py...")
                 return generate_new_token()
 
             payload = json.loads(base64.urlsafe_b64decode(token_parts[1] + "==").decode("utf-8"))
             exp_time = payload.get("exp", 0)
 
             if time.time() > exp_time:
-                print("🔄 Token expired! Generating a new one...")
+                print("Token expired! Generating a new one...")
                 return generate_new_token()
 
-            print(f"🔑 Loaded Valid Token: {token[:30]}... (truncated)")
+            print(f"Loaded Valid Token: {token[:30]}... (truncated)")
             return token
 
     except Exception as e:
-        print(f"❌ Error reading token: {str(e)}. Running get_token.py...")
+        print(f"Error reading token: {str(e)}. Running get_token.py...")
         return generate_new_token()
 
     
@@ -86,7 +86,7 @@ def fetch_data():
     if not token:
         return jsonify({"error": "Failed to retrieve a valid token"}), 401
 
-    print(f"🔑 Using Token: {token[:30]}... (truncated)")  # Debug print
+    print(f"Using Token: {token[:30]}... (truncated)")  # Debug print
 
     # Define the time range (last 30 days)
     now = datetime.utcnow()
@@ -110,20 +110,20 @@ def fetch_data():
             "interval": 5  # 5 sec interval
         }
 
-        print(f"📡 Sending API request to: {url}")
-        print(f"📝 Request Params: {params}")
+        print(f"Sending API request to: {url}")
+        print(f"Request Params: {params}")
         
         # Make the API request
         response = requests.get(url, headers=headers, params=params)
 
         # Debugging print: Print the API response body before processing
-        print(f"🔍 API Response Body: {response.text}")  # Debugging print
+        print(f"API Response Body: {response.text}")  # Debugging print
 
         if response.status_code == 200:
             data = response.json()
 
             # Debugging print: Check if "data" and "values" exist in the response
-            print(f"📊 Data for {variable}: {data.get('data', [])}")  # Debugging print
+            print(f"Data for {variable}: {data.get('data', [])}")  # Debugging print
 
             values = [
                 {"time": entry["time"], "value": entry["value"]}
@@ -145,8 +145,8 @@ def fetch_data():
         "interval": 5
     }
 
-    print(f"📡 Sending API request to: {strain_url}")
-    print(f"📝 Request Params: {strain_params}")
+    print(f"Sending API request to: {strain_url}")
+    print(f"Request Params: {strain_params}")
 
     # Make the API request from strain data
     strain_response = requests.get(strain_url, headers=headers, params=strain_params)
@@ -155,7 +155,7 @@ def fetch_data():
         strain_data = strain_response.json()
 
         # Debugging print: Check if "data" and "values" exist in the response
-        print(f"📊 Data for strain: {strain_data.get('data', [])}")  # Debugging print
+        print(f"Data for strain: {strain_data.get('data', [])}")  # Debugging print
 
         strain_values = [
             {"time": entry["time"], "value": entry["value"]}
@@ -168,7 +168,7 @@ def fetch_data():
             "status_code": strain_response.status_code
         }
 
-    print(f"🔍 Historical Data: {historical_data}")  # Debugging print
+    print(f"Historical Data: {historical_data}")  # Debugging print
 
     return jsonify(historical_data)
 
