@@ -19,7 +19,7 @@ import time
 from datetime import datetime, timedelta
 
 
-# 🛑 Disable GPU usage to prevent CUDA errors
+# Disable GPU usage to prevent CUDA errors
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ["TF_TRT_ALLOW_ENGINE_NATIVE_SEGMENT_EXECUTION"] = "0"
 
@@ -75,14 +75,14 @@ cached_token = None
 token_expiration = 0  # Store token and expiration globally
 
 
-# ✅ Fetch Arduino API Token
+# Fetch Arduino API Token
 def get_token():
     """Fetches a new token from Arduino API if expired."""
     global cached_token, token_expiration
 
     # If token is still valid, return it
     if cached_token and time.time() < token_expiration:
-        print("✅ Using cached token")
+        print("Using cached token")
         return cached_token
 
     # Fetch new token
@@ -103,14 +103,14 @@ def get_token():
         cached_token = response_json.get("access_token", "")
         expires_in = response_json.get("expires_in", 3600)
         token_expiration = time.time() + expires_in - 60
-        print("🔑 Token fetched successfully!")
+        print("Token fetched successfully!")
         return cached_token
     else:
-        print(f"❌ Failed to fetch token: {response.text}")
+        print(f"Failed to fetch token: {response.text}")
         return None
 
 
-# ✅ Fetch Sensor Data from Arduino IoT
+# Fetch Sensor Data from Arduino IoT
 @app.route('/fetch_data', methods=['GET'])
 def fetch_data():
     """Fetch historical sensor data from Arduino Cloud API with pagination."""
@@ -130,14 +130,14 @@ def fetch_data():
         chunk_end = now - timedelta(hours=i * chunk_size_hours)
         time_chunks.append((chunk_start.strftime("%Y-%m-%dT%H:%M:%SZ"), chunk_end.strftime("%Y-%m-%dT%H:%M:%SZ")))
 
-    print("✅ Generated Time Chunks (Oldest → Newest):")
+    print("Generated Time Chunks (Oldest → Newest):")
     for start, end in time_chunks:
         print(f"⏳ {start} → {end}")
 
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     historical_data = {"heartrate": [], "spO2": [], "strain": []}
 
-    # ✅ Function for paginated data fetching
+    # Function for paginated data fetching
     def fetch_paginated_data(variable, property_id, chunk_start, chunk_end):
         """Fetches paginated sensor data from Arduino Cloud API."""
         all_records = []
@@ -154,22 +154,22 @@ def fetch_data():
                 data = response.json()
                 records = [{"time": entry["time"], "value": entry["value"]} for entry in data.get("data", [])]
 
-                # ✅ Append newly fetched data
+                # Append newly fetched data
                 all_records.extend(records)
 
                 # Debugging: Print progress
-                print(f"✅ {variable} - Retrieved {len(records)} points from {next_from} to {chunk_end}")
+                print(f"{variable} - Retrieved {len(records)} points from {next_from} to {chunk_end}")
 
-                # ✅ If fewer than 1000 records were returned, it means we got the last chunk. Stop fetching.
+                # If fewer than 1000 records were returned, it means we got the last chunk. Stop fetching.
                 if len(records) < 1000:
                     break  
 
-                # ✅ Otherwise, update `next_from` to **one second after** the last retrieved timestamp
+                # Otherwise, update `next_from` to **one second after** the last retrieved timestamp
                 last_time = records[-1]["time"]
                 next_from = (datetime.fromisoformat(last_time.replace("Z", "")) + timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
             else:
-                print(f"⚠️ Failed to fetch {variable} for {chunk_start} - {chunk_end}: {response.text}")
+                print(f"Failed to fetch {variable} for {chunk_start} - {chunk_end}: {response.text}")
                 break  # Stop fetching on error
 
         return all_records
@@ -183,10 +183,10 @@ def fetch_data():
     for chunk_start, chunk_end in time_chunks:
         historical_data["strain"].extend(fetch_paginated_data("strain", STRAIN_PROPERTY_ID, chunk_start, chunk_end))
 
-    # ✅ Print final data counts
-    print("✅ Final Data Sizes:")
+    # Print final data counts
+    print("Final Data Sizes:")
     for key, value in historical_data.items():
-        print(f"📊 {key}: {len(value)} records")
+        print(f"{key}: {len(value)} records")
 
     return jsonify(historical_data)
 
@@ -225,7 +225,7 @@ def map_to_full_range(targets, indices, window_size=20, step=5, total_length=Non
     return full_targets
 
 
-# ✅ Process Input Data and Make Predictions
+# Process Input Data and Make Predictions
 def process_and_predict(data):
     """Preprocess sensor data & run it through the ML model."""
     print("Processing data: ", data)
@@ -275,7 +275,7 @@ def process_and_predict(data):
         X = np.array(X_windows).astype(np.float32)
 
         # Debugging: Print first 5 rows
-        print("✅ Before applying window (First 5 Samples):")
+        print("Before applying window (First 5 Samples):")
         print(X_raw.head())
 
         print("Model prediction started...")
@@ -327,7 +327,7 @@ def process_and_predict(data):
         return {"error": str(e)}
 
 
-# ✅ Predict Endpoint
+# Predict Endpoint
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == "OPTIONS":
