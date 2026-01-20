@@ -48,11 +48,11 @@ def get_token():
 
     # If token is still valid, return it
     if cached_token and time.time() < token_expiration:
-        print("✅ Using cached token")
+        print("Using cached token")
         return cached_token
 
     # Fetch new token
-    print("🔄 Fetching a new token from Arduino API...")
+    print("Fetching a new token from Arduino API...")
     response = requests.post(
         TOKEN_URL,
         data={
@@ -69,10 +69,10 @@ def get_token():
         cached_token = response_json.get("access_token", "")
         expires_in = response_json.get("expires_in", 3600)
         token_expiration = time.time() + expires_in - 60  # Refresh token 1 min early
-        print("🔑 Token fetched successfully!")
+        print("Token fetched successfully!")
         return cached_token
     else:
-        print(f"❌ Failed to fetch token: {response.text}")
+        print(f"Failed to fetch token: {response.text}")
         return None
 
 
@@ -83,7 +83,7 @@ def fetch_data():
     if not token:
         return jsonify({"error": "Failed to retrieve a valid token"}), 401
 
-    print("🔑 Using Token:", token[:30], "... (truncated)")  # Debug print
+    print("Using Token:", token[:30], "... (truncated)")  # Debug print
 
     now = datetime.utcnow()
     start_time = (now - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
