@@ -86,7 +86,7 @@ def get_token():
         return cached_token
 
     # Fetch new token
-    print("🔄 Fetching a new token from Arduino API...")
+    print("Fetching a new token from Arduino API...")
     response = requests.post(
         TOKEN_URL,
         data={
@@ -132,7 +132,7 @@ def fetch_data():
 
     print("Generated Time Chunks (Oldest → Newest):")
     for start, end in time_chunks:
-        print(f"⏳ {start} → {end}")
+        print(f"{start} → {end}")
 
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
     historical_data = {"heartrate": [], "spO2": [], "strain": []}
